@@ -26,19 +26,48 @@ app = FastAPI(
     redoc_url=None,
 )
 
+import os
+
+_DEFAULT_ORIGINS = "https://lumen.redpro.com.br,http://localhost:3000"
+ALLOWED_ORIGINS = [
+    o.strip() for o in os.environ.get("ALLOWED_ORIGINS", _DEFAULT_ORIGINS).split(",") if o.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Restringir para o domínio do frontend em produção
+    allow_origins=ALLOWED_ORIGINS,
     allow_methods=["POST", "GET"],
-    allow_headers=["*"],
+    allow_headers=["Authorization", "Content-Type"],
+    allow_credentials=False,
 )
+
+MAX_UPLOAD_BYTES = int(os.environ.get("MAX_UPLOAD_BYTES", 50 * 1024 * 1024))  # 50MB
+
+
+_MAGIC = {
+    ".pdf":  b"%PDF-",
+    ".docx": b"PK\x03\x04",  # DOCX é um ZIP
+}
 
 
 def _save_upload(upload: UploadFile) -> Path:
-    """Salva o upload em arquivo temp e retorna o path."""
-    suffix = Path(upload.filename or "doc.pdf").suffix or ".pdf"
+    """Salva o upload em arquivo temp validando tamanho + magic bytes.
+
+    Levanta HTTPException 413 se exceder limite, 415 se conteúdo não bate com extensão.
+    """
+    suffix = (Path(upload.filename or "doc.pdf").suffix or ".pdf").lower()
+    if suffix not in _MAGIC:
+        raise HTTPException(415, f"Formato não suportado: {suffix}")
+
+    content = upload.file.read(MAX_UPLOAD_BYTES + 1)
+    if len(content) > MAX_UPLOAD_BYTES:
+        raise HTTPException(413, f"Arquivo excede limite de {MAX_UPLOAD_BYTES // (1024*1024)}MB")
+
+    expected_magic = _MAGIC[suffix]
+    if not content.startswith(expected_magic):
+        raise HTTPException(415, "Conteúdo do arquivo não bate com a extensão declarada (magic bytes inválidos)")
+
     tmp = tempfile.NamedTemporaryFile(delete=False, suffix=suffix, prefix="lumen_")
-    content = upload.file.read()
     tmp.write(content)
     tmp.flush()
     tmp.close()

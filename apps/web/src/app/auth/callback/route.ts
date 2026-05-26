@@ -13,10 +13,21 @@ import { createClient } from "@/lib/supabase/server";
  * Recebe `code` na query string e troca por uma sessão (cookies httpOnly).
  * Depois redireciona para `next` (default: /dashboard).
  */
+const ALLOWED_NEXT = ["/dashboard", "/analyze", "/analysis"];
+
+function sanitizeNext(raw: string | null): string {
+  if (!raw) return "/dashboard";
+  // Bloqueia // (protocol-relative) e http(s)://
+  if (!raw.startsWith("/") || raw.startsWith("//")) return "/dashboard";
+  // Whitelist de prefixos válidos
+  if (ALLOWED_NEXT.some((p) => raw === p || raw.startsWith(p + "/"))) return raw;
+  return "/dashboard";
+}
+
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/dashboard";
+  const next = sanitizeNext(searchParams.get("next"));
   const error = searchParams.get("error");
   const errorDescription = searchParams.get("error_description");
 
