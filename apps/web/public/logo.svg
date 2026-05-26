@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Background quadrado preto Fintrixity -->
+  <rect width="120" height="120" rx="22" fill="#0D0D0D"/>
+  <!-- God ray laranja -->
+  <defs>
+    <radialGradient id="ray" cx="100%" cy="0%" r="100%">
+      <stop offset="0%" stop-color="#E8440A" stop-opacity="0.4"/>
+      <stop offset="60%" stop-color="#E8440A" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="120" height="120" rx="22" fill="url(#ray)"/>
+
+  <!-- Escudo central -->
+  <path d="M60 22 L88 32 L88 60 C88 76 76 90 60 96 C44 90 32 76 32 60 L32 32 Z"
+        fill="none" stroke="#E8440A" stroke-width="3.5" stroke-linejoin="round"/>
+
+  <!-- Lupa (feixe forense) dentro do escudo -->
+  <circle cx="56" cy="56" r="11" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+  <line x1="64" y1="64" x2="74" y2="74" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Marca laranja no canto -->
+  <circle cx="84" cy="36" r="4" fill="#E8440A"/>
+</svg>

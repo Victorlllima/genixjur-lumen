@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop, "feat/**", "fix/**"]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('apps/scanner-cli/pyproject.toml', 'apps/api/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install scanner-cli
+        run: pip install -e apps/scanner-cli
+
+      - name: Install API
+        run: pip install -e apps/api
+
+      - name: Install test dependencies
+        run: pip install pytest httpx
+
+      - name: Generate test fixtures
+        run: python tests/fixtures/generate_test_pdfs.py
+
+      - name: Run tests
+        env:
+          # Semantic layer desabilitado no CI (sem chave real)
+          ANTHROPIC_API_KEY: ""
+          PYTHONPATH: "apps/scanner-cli:apps/api"
+        run: pytest tests/ -v --tb=short
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install ruff
+        run: pip install ruff
+
+      - name: Lint scanner-cli
+        run: ruff check apps/scanner-cli/lumen_scanner/ --select E,W,F --ignore E501
+
+      - name: Lint API
+        run: ruff check apps/api/lumen_api/ --select E,W,F --ignore E501

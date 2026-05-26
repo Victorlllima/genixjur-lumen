@@ -1,0 +1,137 @@
+@import "tailwindcss";
+
+/* ── Fintrixity Design System ── */
+:root {
+  --bg:          #0D0D0D;
+  --card:        #1A1A1A;
+  --card-hover:  #222222;
+  --border:      #2A2A2A;
+  --accent:      #E8440A;
+  --accent-soft: #FF6B35;
+  --text:        #FFFFFF;
+  --text-2:      #A0A0A0;
+  --text-3:      #5A5A5A;
+  --critical:    #EF4444;
+  --high:        #F97316;
+  --medium:      #EAB308;
+  --low:         #3B82F6;
+  --success:     #22C55E;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Grotesk', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
+
+/* God ray laranja — topo direita */
+body::before {
+  content: '';
+  position: fixed;
+  top: -200px;
+  right: -200px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(232,68,10,0.12) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Grid perspectiva */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Garante que o conteúdo fica acima do grid */
+#__next, main { position: relative; z-index: 1; }
+
+/* Scrollbar minimalista */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* Fontes — carregadas via layout.tsx com next/font */
+.font-mono { font-family: 'JetBrains Mono', monospace; }
+
+/* Utilitários Fintrixity */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: white;
+  font-weight: 600;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  font-family: inherit;
+  font-size: 14px;
+}
+.btn-primary:hover { background: var(--accent-soft); transform: translateY(-1px); }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-2);
+  font-weight: 500;
+  padding: 10px 20px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+  font-family: inherit;
+  font-size: 14px;
+}
+.btn-ghost:hover { border-color: var(--text-3); color: var(--text); }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.badge-critical { background: rgba(239,68,68,0.15); color: var(--critical); }
+.badge-high     { background: rgba(249,115,22,0.15); color: var(--high); }
+.badge-medium   { background: rgba(234,179,8,0.15);  color: var(--medium); }
+.badge-low      { background: rgba(59,130,246,0.15); color: var(--low); }
+.badge-info     { background: rgba(34,197,94,0.15);  color: var(--success); }
+
+/* Animação de entrada */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.3s ease forwards; }
+
+/* Drop zone */
+.dropzone {
+  border: 2px dashed var(--border);
+  border-radius: 16px;
+  transition: border-color 0.2s, background 0.2s;
+  cursor: pointer;
+}
+.dropzone:hover, .dropzone.drag-over {
+  border-color: var(--accent);
+  background: rgba(232,68,10,0.04);
+}

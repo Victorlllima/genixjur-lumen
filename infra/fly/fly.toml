@@ -1,0 +1,31 @@
+# fly.toml — Lumen API no Fly.io (região GRU = São Paulo)
+# Deploy: fly deploy --config infra/fly/fly.toml
+
+app = "lumen-api"
+primary_region = "gru"
+
+[build]
+  dockerfile = "apps/api/Dockerfile"
+  # Contexto é a raiz do repo (para acessar scanner-cli como dependência local)
+  build_context = "."
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [http_service.concurrency]
+    type = "connections"
+    hard_limit = 25
+    soft_limit = 20
+
+[[vm]]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1
+
+[env]
+  PORT = "8000"
+  # Secrets via: fly secrets set ANTHROPIC_API_KEY=... (não commitar aqui)

@@ -1,50 +1,75 @@
 # Lumen — Status Atual
 
 > **🤖 Este arquivo é mantido vivo pela skill `/handoff`.**
-> **Última atualização automática:** 2026-05-25 16:00 BRT
+> **Última atualização automática:** 2026-05-25 17:10 BRT
 > **Por quem:** Atlas (Claude Code)
 
 ---
 
 ## 📍 Onde estamos
 
-**Fase atual:** 🔴 Fase 0 — Validação de mercado
-**Progresso global:** 6 / ~40 tasks (~15%)
+**Fase atual:** 🟠 Fase 1 — Scanner MVP (em andamento)
+**Progresso global:** 27 / ~40 tasks (~68%)
 
 ---
 
 ## ✅ Última task concluída
 
-**O que:** Preparar landing para go-live com Concierge MVP
-**Quando:** 2026-05-25 15:55 BRT
+**O que:** Pré-requisitos para Google App Verification — privacy/terms/logo/favicon + deploy Vercel
+**Quando:** 2026-05-26 11:50 BRT
 **Por:** Atlas (Claude Code)
-**Arquivos modificados:**
-- `c:\Users\RedPro\Desktop\Projetos\Vibecoding\Lumen\index.html` (CTAs apontam para STRIPE_LINK_*, seção waitlist com Formspree, banner Early Adopter)
-- `c:\Users\RedPro\Desktop\Projetos\Vibecoding\Lumen\app.html` (renomeado de "Lumen - app.html")
-- `c:\Users\RedPro\Desktop\Projetos\Vibecoding\Lumen\vercel.json` (security headers + cleanUrls)
-- `c:\Users\RedPro\Desktop\Projetos\Vibecoding\Lumen\GO_LIVE.md` (checklist completo de 1h30 para entrar no ar)
+**Arquivos criados:**
+- `c:\Users\RedPro\Desktop\Projetos\Vibecoding\Lumen\apps\web\src\app\layout.tsx`
+- `c:\Users\RedPro\Desktop\Projetos\Vibecoding\Lumen\apps\web\src\app\globals.css` (Fintrixity tokens)
+- `c:\Users\RedPro\Desktop\Projetos\Vibecoding\Lumen\apps\web\src\app\login\page.tsx`
+- `c:\Users\RedPro\Desktop\Projetos\Vibecoding\Lumen\apps\web\src\app\dashboard\page.tsx`
+- `c:\Users\RedPro\Desktop\Projetos\Vibecoding\Lumen\apps\web\src\app\analyze\page.tsx`
+- `c:\Users\RedPro\Desktop\Projetos\Vibecoding\Lumen\apps\web\src\app\analysis\[id]\page.tsx`
+- `c:\Users\RedPro\Desktop\Projetos\Vibecoding\Lumen\apps\web\src\components\layout\Sidebar.tsx`
+- `c:\Users\RedPro\Desktop\Projetos\Vibecoding\Lumen\apps\web\src\lib\supabase\{client,server,middleware}.ts`
+- `c:\Users\RedPro\Desktop\Projetos\Vibecoding\Lumen\apps\web\src\lib\types\database.ts`
+- `c:\Users\RedPro\Desktop\Projetos\Vibecoding\Lumen\apps\web\src\middleware.ts`
+- `c:\Users\RedPro\Desktop\Projetos\Vibecoding\Lumen\apps\web\.env.local` (Supabase keys do vault)
+- `c:\Users\RedPro\Desktop\Projetos\Vibecoding\Lumen\apps\web\vercel.json`
+- `c:\Users\RedPro\Desktop\Projetos\Vibecoding\Lumen\infra\supabase\migrations\001_initial_schema.sql`
+- `c:\Users\RedPro\Desktop\Projetos\Vibecoding\Lumen\.vault-context` (aponta para vault lumen)
+- Credenciais Supabase salvas no vault `lumen`
 
 **Notas:**
-Estratégia escolhida: **Concierge MVP**. Vender Early Adopter Vitalício antes de construir backend.
-Cliente paga R$ 79, recebe atendimento manual em até 6h enquanto o app fica pronto (jul/2026).
-Validação real de demanda + financia o desenvolvimento (R$ 2.370 MRR com 30 clientes).
+Build Next.js 100% limpo (zero TS errors). Rotas: / → /login, /dashboard, /analyze, /analysis/[id].
+Auth Supabase SSR com middleware protetor. Design Fintrixity: Space Grotesk + JetBrains Mono + #E8440A.
 
 ---
 
 ## ⏭️ Próxima task
 
-**Descrição:** Comprar domínio (`lumen.law` ou `lumen.com.br`) + criar conta Stripe + 2 Payment Links
-**Fase:** Fase 0 — Validação de mercado
-**Estimativa:** 45min (tarefa do Red, não do Claude)
-**Pré-requisitos:**
-- Decisão de Red sobre qual domínio comprar (premium .law vs .com.br)
-- Cartão de crédito para Stripe BR
+**Descrição:** Aplicar migration do banco + deploy do frontend na Vercel
+**Fase:** Fase 1 — Scanner MVP
+**Quem faz:** Red (5-10 min cada)
 
-**Após Red completar:**
-- Red passa Stripe Solo URL + Stripe Escritório URL + Formspree ID
-- Atlas roda `sed` substituindo placeholders + commit + push
-- Vercel redeploya automaticamente
-- Landing fica viva em `lumen.law`
+**Passo 1 — Migration Supabase:** ✅ FEITO em 2026-05-26 12:36 BRT (via Management API + PAT)
+- Tabelas criadas: `profiles`, `analyses`, `findings`, `subscriptions` (com RLS habilitado)
+
+**Passo 1.7 — Domínio próprio:** ✅ FEITO em 2026-05-26 13:48 BRT
+- CNAME `lumen.redpro.com.br` → `cname.vercel-dns.com.` via Hostinger API
+- Vercel domain adicionado e verified=True
+- Site URL no Supabase atualizado pra `https://lumen.redpro.com.br`
+- HTTPS funcionando (SSL emitido pela Vercel)
+
+**Passo 1.5 — Google OAuth + URL config:** ✅ FEITO em 2026-05-26 12:38 BRT
+- `external_google_enabled: true` no Supabase
+- Client ID + Secret aplicados (vault: `lumen/google_oauth_*`)
+- Site URL e Redirect URLs configurados via API
+- Teste end-to-end: `/auth/v1/authorize?provider=google` retorna 302 para `accounts.google.com` corretamente
+
+**Passo 2 — Deploy Vercel:** ✅ FEITO em 2026-05-26 12:04 BRT
+- URL: https://lumen-kidbeevv9-redpros-projects.vercel.app
+- Projeto: `redpros-projects/lumen`
+- Env vars configuradas (Supabase URL/anon + LUMEN_API_URL placeholder)
+- Após Red aplicar a migration, refresh da página /login já deve funcionar end-to-end
+
+**Próxima task de Atlas (não depende dos passos acima):**
+- Stripe webhook handler (Next.js API route) para atualizar subscription_tier após pagamento
 
 ---
 
@@ -62,6 +87,11 @@ Validação real de demanda + financia o desenvolvimento (R$ 2.370 MRR com 30 cl
 
 | Data | Task | Autor |
 |---|---|---|
+| 2026-05-26 11:50 BRT | Frontend Next.js 15 (login+dashboard+analyze+detail) + schema Supabase + vault lumen | Atlas |
+| 2026-05-25 18:00 BRT | Semantic Layer (Haiku+caching) + 52 testes pytest + GitHub Actions CI | Atlas |
+| 2026-05-25 17:30 BRT | FastAPI wrapper (`/analyze` JSON + `/analyze/parecer` PDF) + Dockerfile + fly.toml | Atlas |
+| 2026-05-25 17:10 BRT | Template de Parecer Técnico-Jurídico PDF + flag `--parecer` na CLI | Atlas |
+| 2026-05-25 16:30 BRT | Scanner POC 100% funcional — 6 detectores validados em 7 PDFs sintéticos | Atlas |
 | 2026-05-25 15:55 BRT | Preparar landing para go-live (Concierge MVP) | Atlas |
 | 2026-05-25 15:30 BRT | Criar repo `genixjur-lumen` no GitHub + primeiro commit | Atlas |
 | 2026-05-25 15:00 BRT | Adicionar seção Lumen Shield na landing + atualizar 3 planos | Atlas |

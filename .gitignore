@@ -18,3 +18,8 @@ build/
 .shark/
 /tmp/
 ianna_reel.*
+*.egg-info/
+# Pareceres gerados localmente (não comitar PDFs de clientes)
+tests/fixtures/parecer_*.pdf
+tests/fixtures/parecer_via_api.pdf
+tests/fixtures/parecer_api_test.pdf

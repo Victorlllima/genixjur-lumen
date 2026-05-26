@@ -67,31 +67,37 @@ Sem código. Apenas:
 
 #### Backend (`lumen-core` + `lumen-api`)
 
-- [ ] Estrutura monorepo Python com Poetry: `lumen-core/` (lib) + `lumen-api/` (FastAPI)
-- [ ] **Detector 1 — White text:** PyMuPDF span analysis. Flag `color RGB > 0.9` em fundo similar.
-- [ ] **Detector 2 — Micro font:** flag `size < 2pt`.
-- [ ] **Detector 3 — Off-page:** comparar `bbox` vs `mediabox` da página.
-- [ ] **Detector 4 — ZWC:** regex Unicode `[​-‏﻿⁠]`.
-- [ ] **Detector 5 — Metadata:** parse `/Title`, `/Subject`, `/Keywords`, `/Author`.
-- [ ] **Detector 6 — OCG:** parsing estrutural de Optional Content Groups.
-- [ ] **Semantic layer:** texto suspeito → Claude Haiku → classifica `injection | watermark legítimo | falso positivo`. **Com prompt caching** (system prompt grande fica em cache).
-- [ ] **Diff visual:** render PDF como PNG (PyMuPDF) → Tesseract OCR → diff com `pdftotext`. Discrepâncias = conteúdo oculto.
-- [ ] Endpoint `POST /analyze` recebe PDF, retorna JSON com `findings[]`, `severity`, `confidence`, `reconstructed_commands[]`.
-- [ ] Geração de relatório PDF (ReportLab) com SHA-256 do original + assinatura digital interna.
+- [x] Estrutura do pacote Python com setuptools: `apps/scanner-cli/` (CLI instalável) — *25/05/2026*
+- [x] **Detector 1 — White text:** PyMuPDF span analysis. Flag `color RGB > 0.9` em fundo similar. — *25/05/2026*
+- [x] **Detector 2 — Micro font:** flag `size < 2pt`. — *25/05/2026*
+- [x] **Detector 3 — Off-page:** expand cropbox → mediabox, detecta texto fora do visível. — *25/05/2026*
+- [x] **Detector 4 — ZWC:** regex Unicode sobre texto + anotações + metadados. — *25/05/2026*
+- [x] **Detector 5 — Metadata:** parse `/Title`, `/Subject`, `/Keywords`, `/Author`, `/Producer`, `/Creator`. — *25/05/2026*
+- [x] **Detector 6 — OCG:** parsing estrutural de Optional Content Groups. — *25/05/2026*
+- [x] CLI `lumen <pdf>` com Rich UI + `--json` + `--quiet` + `--parecer`. — *25/05/2026*
+- [x] Geração de Parecer Técnico-Jurídico PDF (ReportLab) com SHA-256, veredito, findings, glossário, recomendações. — *25/05/2026*
+- [x] 7 PDFs de teste sintéticos (01_clean → 07_combined) para validação red team. — *25/05/2026*
+- [x] **Semantic layer:** Claude Haiku classifica `injection | watermark_legitimo | falso_positivo` com prompt caching. Flag `--semantic` na CLI + `?semantic=true` na API. — *25/05/2026*
+- [x] Suite de testes pytest: 52 testes cobrindo detectores + scanner + parecer + API. — *25/05/2026*
+- [x] GitHub Actions CI: matrix Python 3.11/3.12 + ruff lint. — *25/05/2026*
+- [ ] **Diff visual:** render PDF como PNG (PyMuPDF) → Tesseract OCR → diff com `pdftotext`. Discrepâncias = conteúdo oculto. *(requer Tesseract instalado no servidor)*
+- [x] Endpoint `POST /analyze` (FastAPI) recebe PDF, retorna JSON com `findings[]`, `severity`, `confidence`, `reconstructed_commands[]`. — *25/05/2026*
+- [x] Endpoint `POST /analyze/parecer` retorna PDF do Parecer direto para download. — *25/05/2026*
+- [x] Dockerfile + fly.toml (Fly.io GRU) para deploy do backend. — *25/05/2026*
 
 #### Frontend (`lumen-app`)
 
-- [ ] Migrar mockup HTML para Next.js no template Fintrixity
-- [ ] Drag-and-drop upload com progress bar
-- [ ] Dashboard de análises (já mockado)
-- [ ] Tela de detalhamento forense (já mockada)
-- [ ] Geração e download do parecer técnico-jurídico
+- [x] Migrar mockup HTML para Next.js + App Router no template Fintrixity (Space Grotesk + JetBrains Mono + deisgn system Fintrixity). — *26/05/2026*
+- [x] Drag-and-drop upload com progress bar em 4 etapas (enviando/analisando/salvando/concluído). — *26/05/2026*
+- [x] Dashboard de análises com stats (total/injection/limpos) + lista com badge de severidade. — *26/05/2026*
+- [x] Tela de detalhamento forense com findings completos, veredito semântico IA, SHA-256, bbox. — *26/05/2026*
+- [ ] Download do Parecer PDF diretamente da tela de detalhe (requer armazenamento temporário)
 - [ ] Histórico paginado com filtro por severidade
 
 #### Infra
 
-- [ ] Supabase: tables `users`, `analyses`, `findings`, `subscriptions`
-- [ ] RLS: usuário só vê suas próprias análises
+- [x] Supabase: schema SQL com tables `profiles`, `analyses`, `findings`, `subscriptions` + RLS em todas. — *26/05/2026*
+- [x] RLS: usuário só vê suas próprias análises (policies + trigger de profile automático). — *26/05/2026*
 - [ ] Stripe checkout para plano Solo (R$ 79) e Escritório (R$ 299)
 - [ ] Webhook Stripe → Supabase atualiza `subscription_tier`
 - [ ] Deploy: Fly.io (api) + Vercel (web)
