@@ -28,7 +28,7 @@ app = FastAPI(
 
 import os
 
-_DEFAULT_ORIGINS = "https://lumen.redpro.com.br,http://localhost:3000"
+_DEFAULT_ORIGINS = "https://lumen.hubtech.tec.br,http://localhost:3000"
 ALLOWED_ORIGINS = [
     o.strip() for o in os.environ.get("ALLOWED_ORIGINS", _DEFAULT_ORIGINS).split(",") if o.strip()
 ]
