@@ -3,6 +3,10 @@
     {
       "source": "/api/scanner/:path*",
       "destination": "https://api.lumen.hubtech.tec.br/:path*"
+    },
+    {
+      "source": "/demo",
+      "destination": "/demo/index.html"
     }
   ],
   "headers": [
